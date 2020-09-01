@@ -1,0 +1,14 @@
+{
+  "clangd": {
+    "enabled": true,
+    "arguments": [],
+    "disableDiagnostics": false,
+    //"path": "D:\\code\\repo\\llvm-project\\build-new\\Release\\bin\\clangd",
+    "fallbackFlags": [
+      "-march=native",
+      "-std=c++17",
+      "-ID:\\code\\algo\\include"
+    ],
+    "semanticHighlighting": true
+  }
+}
