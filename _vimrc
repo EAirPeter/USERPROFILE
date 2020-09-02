@@ -7,23 +7,23 @@ set pythonthreedll=python37.dll
 
 """" Operating System
 " unknown, windows, wsl, linux, macosx
-let s:os = 'unknown'
+let g:os = 'unknown'
 
 if has('win64') || has('win32')
-  let s:os = 'windows'
+  let g:os = 'windows'
 elseif has('mac') || has('macunix') || has('osx') || has('osxdarwin')
-  let s:os = 'macosx'
+  let g:os = 'macosx'
 elseif has('unix')
   let uname = readfile('/proc/version')
-  if uname[0] =~ 'Microsoft'
-    let s:os = 'wsl'
+  if uname[0] =~ '[Mm]icrosoft'
+    let g:os = 'wsl'
   else
-    let s:os = 'linux'
+    let g:os = 'linux'
   endif
 endif
 
 """" Plugins
-if s:os == 'windows'
+if g:os == 'windows'
   let g:plugdir = '~/vimfiles/plugged'
 else
   let g:plugdir = '~/.vim/plugged'
@@ -289,19 +289,19 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 """" Compilation and Execution
-if s:os == 'windows'
+if g:os == 'windows'
   let s:ce_cc = 'clang -Xclang -flto-visibility-public-std -D_CRT_SECURE_NO_WARNINGS'
   let s:ce_cxx = 'clang++ -Xclang -flto-visibility-public-std -D_CRT_SECURE_NO_WARNINGS'
   let s:ce_include = ['D:\\code\\algo\\include']
   let s:ce_exec = '%<.exe'
   let s:ce_clip = 'clip'
-elseif s:os == 'wsl'
+elseif g:os == 'wsl'
   let s:ce_cc = 'gcc'
   let s:ce_cxx = 'g++'
   let s:ce_include = ['/mnt/code/algo/include']
   let s:ce_exec = './%<.exe'
   let s:ce_clip = '/mnt/c/Windows/System32/clip.exe'
-elseif s:os == 'linux'
+elseif g:os == 'linux'
   let s:ce_cc = 'gcc'
   let s:ce_cxx = 'g++'
   let s:ce_include = []
