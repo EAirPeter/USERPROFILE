@@ -5,9 +5,31 @@ set hidden
 
 set pythonthreedll=python37.dll
 
-"""" Plugins
+"""" Operating System
+" unknown, windows, wsl, linux, macosx
+let s:os = 'unknown'
 
-call plug#begin('~/vimfiles/plugged')
+if has('win64') || has('win32')
+  let s:os = 'windows'
+elseif has('mac') || has('macunix') || has('osx') || has('osxdarwin')
+  let s:os = 'macosx'
+elseif has('unix')
+  let uname = readfile('/proc/version')
+  if uname[0] =~ 'Microsoft'
+    let s:os = 'wsl'
+  else
+    let s:os = 'linux'
+  endif
+endif
+
+"""" Plugins
+if s:os == 'windows'
+  let g:plugdir = '~/vimfiles/plugged'
+else
+  let g:plugdir = '~/.vim/plugged'
+endif
+
+call plug#begin(g:plugdir)
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'EAirPeter/vim-lsp-cxx-highlight'
@@ -15,6 +37,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'EAirPeter/vim-studio-dark'
 Plug 'lifepillar/vim-colortemplate'
+Plug 'tikhomirov/vim-glsl'
 "Plug 'tomasiser/vim-code-dark'
 "Plug 'altercation/vim-colors-solarized'
 
@@ -58,9 +81,9 @@ let g:airline_symbols.linenr = '☰'
 let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.dirty='⚡'
 
-map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-  \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-  \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+map <F10> :echo "hi<" .. synIDattr(synID(line("."),col("."),1),"name") .. '> trans<'
+  \ .. synIDattr(synID(line("."),col("."),0),"name") .. "> lo<"
+  \ .. synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") .. ">"<CR>
 
 """" No Useless Files
 set nobackup
@@ -148,6 +171,8 @@ endif
 "  let col = col('.') - 1
 "  return !col || getline('.')[col - 1]  =~# '\s'
 "endfunction
+
+inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
 " Use <c-space> to trigger completion.
 if has('nvim')
@@ -264,66 +289,128 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 """" Compilation and Execution
-let g:Gcc = "!debian -c \"gcc"
-let g:Gxx = "!debian -c \"g++"
-let g:Gdb = "!debian -c \"gdb"
-let g:Clang = "!clang -Xclang -flto-visibility-public-std"
-let g:Clang = g:Clang . " -D_CRT_SECURE_NO_WARNINGS"
-let g:Clangxx = "!clang++ -Xclang -flto-visibility-public-std"
-let g:Clangxx = g:Clangxx . " -D_CRT_SECURE_NO_WARNINGS"
+if s:os == 'windows'
+  let s:ce_cc = 'clang -Xclang -flto-visibility-public-std -D_CRT_SECURE_NO_WARNINGS'
+  let s:ce_cxx = 'clang++ -Xclang -flto-visibility-public-std -D_CRT_SECURE_NO_WARNINGS'
+  let s:ce_include = ['D:\\code\\algo\\include']
+  let s:ce_exec = '%<.exe'
+  let s:ce_clip = 'clip'
+elseif s:os == 'wsl'
+  let s:ce_cc = 'gcc'
+  let s:ce_cxx = 'g++'
+  let s:ce_include = ['/mnt/code/algo/include']
+  let s:ce_exec = './%<.exe'
+  let s:ce_clip = '/mnt/c/Windows/System32/clip.exe'
+elseif s:os == 'linux'
+  let s:ce_cc = 'gcc'
+  let s:ce_cxx = 'g++'
+  let s:ce_include = []
+  let s:ce_exec = './%<'
+  let s:ce_clip = 'xclip'
+endif
 
-let g:GccFlags      = " -Wall -Wconversion -Wextra -Wformat -o %<.exe % -DVIOLOCAL"
-let g:GxxFlags      = " -Wall -Wconversion -Wextra -Wformat -o %<.exe % -DVIOLOCAL -I/mnt/d/code/algo/include"
-let g:ClangFlags    = " -Wall -Wconversion -Wextra -Wformat -o %<.exe % -DVIOLOCAL"
-let g:ClangxxFlags  = " -Wall -Wconversion -Wextra -Wformat -o %<.exe % -DVIOLOCAL -ID:\\code\\algo\\include"
+let s:ce_cflags = '-DVIOLOCAL -Wall -Wconversion -Wextra -Wformat'
+for inc in s:ce_include
+  let s:ce_cflags ..= ' -I' .. inc
+endfor
 
-let g:CGcc      = g:Gcc     . g:GccFlags
-let g:CClang    = g:Clang   . g:ClangFlags
-let g:CxxGcc    = g:Gxx     . g:GxxFlags
-let g:CxxClang  = g:Clangxx . g:ClangxxFlags
+let s:cpy_c = '!cppcp %'
+for inc in s:ce_include
+  let s:cpy_c ..= ' ' .. inc
+endfor
+let s:cpy_cpp = s:cpy_c
 
-au FileType ada map <buffer> <F5>    :execute "!gdb %<.exe"<CR>
-au FileType ada map <buffer> <F8>    :execute "!%<.exe"<CR>
-au FileType ada map <buffer> <F9>    :execute "!gnatmake %<"<CR>
+let s:com_c       = '!' .. s:ce_cc  .. ' -o ' .. s:ce_exec .. ' % ' .. s:ce_cflags
+let s:com_cpp     = '!' .. s:ce_cxx .. ' -o ' .. s:ce_exec .. ' % ' .. s:ce_cflags
 
-au FileType c   map <buffer> <C-F8>  :execute "!cppcp %"<CR>
-au FileType c   map <buffer> <F8>    :execute "!%<.exe"<CR>
-au FileType c   map <buffer> <F7>    :execute g:CClang . " -std=c11 -O2"<CR>
-au FileType c   map <buffer> <F9>    :execute g:CClang . " -std=c99 -O2"<CR>
-au FileType c   map <buffer> <F5>    :execute g:Gdb . " %<.exe\""<CR>
-au FileType c   map <buffer> <C-F7>  :execute g:CGcc   . " -std=c11 -O0 -ggdb\""<CR>
-au FileType c   map <buffer> <C-F9>  :execute g:CGcc   . " -std=c99 -O0 -ggdb\""<CR>
+let s:arg_c       = ['-std=c99   -O2', '-std=c99   -O0 -g',
+                  \  '-std=c11   -O2', '-std=c11   -O0 -g']
+let s:arg_cpp     = ['-std=c++14 -O2', '-std=c++14 -O0 -g',
+                  \  '-std=c++17 -O2', '-std=c++17 -O0 -g',
+                  \  '-std=c++11 -O2', '-std=c++11 -O0 -g',
+                  \  '-std=c++98 -O2', '-std=c++98 -O0 -g']
 
-au FileType cpp map <buffer> <C-F8>  :execute "!cppcp %"<CR>
-au FileType cpp map <buffer> <F8>    :execute "!%<.exe"<CR>
-au FileType cpp map <buffer> <C-F5>  :execute "!debian -c \"./%<.exe\""<CR>
-au FileType cpp map <buffer> <F6>    :execute g:CxxGcc   . " -std=c++11 -O2\""<CR>
-au FileType cpp map <buffer> <F7>    :execute g:CxxClang . " -std=c++17 -O2"<CR>
-au FileType cpp map <buffer> <F9>    :execute g:CxxClang . " -std=c++14 -O2"<CR>
-au FileType cpp map <buffer> <F11>   :execute g:CxxGcc   . " -std=c++98 -O2\""<CR>
-au FileType cpp map <buffer> <F5>    :execute g:Gdb . " %<.exe\""<CR>
-au FileType cpp map <buffer> <C-F6>  :execute g:CxxGcc   . " -std=c++11 -O0 -ggdb\""<CR>
-au FileType cpp map <buffer> <C-F7>  :execute g:CxxGcc   . " -std=c++17 -O0 -ggdb\""<CR>
-au FileType cpp map <buffer> <C-F9>  :execute g:CxxGcc   . " -std=c++14 -O0 -ggdb\""<CR>
-au FileType cpp map <buffer> <C-F11> :execute g:CxxGcc   . " -std=c++98 -O0 -ggdb\""<CR>
+let s:run_c    = '!' .. s:ce_exec
+let s:run_cpp  = '!' .. s:ce_exec
+let s:dbg_c    = '!gdb ' .. s:ce_exec
+let s:dbg_cpp  = '!gdb ' .. s:ce_exec
 
-au FileType rust      map <buffer> <F8>    :execute "!%<.exe"<CR>
-au FileType rust      map <buffer> <F9>    :execute "!rustc %"<CR>
+let s:com_rust = '!rustc -o ' .. s:ce_exec .. ' %'
+let s:run_rust = '!' .. s:ce_exec
 
-au FileType bib       map <buffer> <F9>    :execute "!bibtex %"<CR>
+let s:com_tex = '!xelatex %'
+let s:com_bib = '!bibtex %'
+
+function! CeAppendAll(cmd, args)
+  let res = a:cmd
+  for arg in a:args
+    res ..= ' ' .. arg
+  endfor
+  return res
+endfunction
+
+function! CeCompile(idx, ...)
+  " F9, C-F9, F7, C-F7, F6, C-F6, F11, C-F11
+  let cmd = get(s:, 'com_' .. &filetype, '')
+  if cmd == ''
+    echo 'No compile command associated with filetype=' .. &filetype
+    return
+  endif
+  let cmd ..= ' ' .. get(s:, 'arg_' .. &filetype, [])->get(a:idx, '')
+  execute CeAppendAll(cmd, a:000)
+endfunction
+
+function! CeCopy(...)
+  " C-F8
+  let cmd = get(s:, 'cpy_' .. &filetype, '')
+  if cmd == ''
+    let cmd = '!' .. s:ce_clip .. ' < %'
+  else
+    let cmd = CeAppendAll(cmd, a:000) .. ' | ' .. s:ce_clip
+  endif
+  execute cmd
+endfunction
+
+function! CeRun(...)
+  " F8
+  let cmd = get(s:, 'run_' .. &filetype, '')
+  if cmd == ''
+    echo 'No run command set associated with filetype=' .. &filetype
+    return
+  endif
+  execute CeAppendAll(cmd, a:000)
+endfunction
+
+function! CeDebug(...)
+  " F5
+  let cmd = get(s:, 'dbg_' .. &filetype, '')
+  if cmd == ''
+    echo 'No debug command associated with filetype=' .. &filetype
+    return
+  endif
+  execute CeAppendAll(cmd, a:000)
+endfunction
+
+nnoremap <F5>    :call CeDebug()<CR>
+nnoremap <F8>    :call CeRun()<CR>
+nnoremap <C-F8>  :call CeCopy()<CR>
+nnoremap <F9>    :call CeCompile(0)<CR>
+nnoremap <C-F9>  :call CeCompile(1)<CR>
+nnoremap <F7>    :call CeCompile(2)<CR>
+nnoremap <C-F7>  :call CeCompile(3)<CR>
+nnoremap <F6>    :call CeCompile(4)<CR>
+nnoremap <C-F6>  :call CeCompile(5)<CR>
+nnoremap <F11>   :call CeCompile(6)<CR>
+nnoremap <C-F11> :call CeCompile(7)<CR>
 
 au FileType tex       setlocal spell
 au FileType tex       setlocal indentexpr=
 au FileType tex       setlocal tw=99
-au FileType tex       map <buffer> <F8>    :execute "!%<.pdf"<CR>
-au FileType tex       map <buffer> <F9>    :execute "!xelatex %"<CR>
 
 au FileType markdown  setlocal spell
 au FileType markdown  setlocal indentexpr=
 au FileType markdown  setlocal tw=99
-au FileType markdown  map <buffer> <F8>    :execute "!%"<CR>
 
 au FileType text      setlocal spell
 au FileType text      setlocal indentexpr=
 au FileType text      setlocal tw=99
-au FileType text      map <buffer> <F8>    :execute "!%"<CR>
