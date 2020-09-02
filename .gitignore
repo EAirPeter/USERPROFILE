@@ -2,6 +2,8 @@
 !.gitignore
 !.gitconfig
 !_vimrc
+!.vim
+!.vimrc
 !_vsvimrc
 !vimfiles/
 !vimfiles/*
