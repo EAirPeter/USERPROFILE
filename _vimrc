@@ -337,6 +337,9 @@ let s:run_cpp  = '!' .. s:ce_exec
 let s:dbg_c    = '!gdb ' .. s:ce_exec
 let s:dbg_cpp  = '!gdb ' .. s:ce_exec
 
+let s:com_java = '!javac %'
+let s:run_java = '!java %<'
+
 let s:com_rust = '!rustc -o ' .. s:ce_exec .. ' %'
 let s:run_rust = '!' .. s:ce_exec
 
