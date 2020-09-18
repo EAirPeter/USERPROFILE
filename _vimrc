@@ -118,6 +118,8 @@ set colorcolumn=100
 
 set mouse=a
 
+set belloff=all
+
 "set timeout
 "set timeoutlen=100
 
