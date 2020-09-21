@@ -38,6 +38,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'EAirPeter/vim-studio-dark'
 Plug 'lifepillar/vim-colortemplate'
 Plug 'tikhomirov/vim-glsl'
+Plug 'pprovost/vim-ps1'
 "Plug 'tomasiser/vim-code-dark'
 "Plug 'altercation/vim-colors-solarized'
 
