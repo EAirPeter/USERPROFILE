@@ -43,6 +43,10 @@ Plug 'lervag/vimtex'
 "Plug 'tomasiser/vim-code-dark'
 "Plug 'altercation/vim-colors-solarized'
 
+Plug 'EAirPeter/coc-clangd', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-vimtex', {'do': 'yarn install --frozen-lockfile'}
+
 call plug#end()
 
 """" Color and Themes
@@ -319,7 +323,7 @@ elseif g:os == 'linux'
   let s:ce_clip = 'xclip'
 endif
 
-let s:ce_cflags = '-DVIOLOCAL -Wall -Wconversion -Wextra -Wformat -march=native'
+let s:ce_cflags = '-DVIOLOCAL -Wall -Wconversion -Wextra -Wformat'
 for inc in s:ce_include
   let s:ce_cflags ..= ' -I' .. inc
 endfor
@@ -344,6 +348,9 @@ let s:run_c    = '!' .. s:ce_exec
 let s:run_cpp  = '!' .. s:ce_exec
 let s:dbg_c    = '!gdb ' .. s:ce_exec
 let s:dbg_cpp  = '!gdb ' .. s:ce_exec
+
+let s:com_nasm = '!nasm -f bin % -o ' .. s:ce_exec .. ' && chmod +x ' .. s:ce_exec
+let s:run_nasm = '!' .. s:ce_exec
 
 let s:com_java = '!javac %'
 let s:run_java = '!java %<'
