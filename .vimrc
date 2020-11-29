@@ -3,8 +3,6 @@ filetype off
 
 set hidden
 
-set pythonthreedll=python37.dll
-
 """" Operating System
 " unknown, windows, wsl, linux, macosx
 let g:os = 'unknown'
