@@ -7,7 +7,6 @@
       "-march=native",
       "-std=c++17",
       "-ID:\\code\\algo\\include",
-      "-IC:\\Users\\Viole\\OneDrive\\Desktop\\nyu\\hps\\or-tools_VisualStudio2019-64bit_v7.8.7959\\include",
       "-D_CRT_SECURE_NO_WARNINGS"
     ],
     "semanticHighlighting": true
