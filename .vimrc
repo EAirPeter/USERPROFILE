@@ -29,25 +29,32 @@ let g:plugdir = '~/.vim/plugged'
 
 call plug#begin(g:plugdir)
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'EAirPeter/vim-lsp-cxx-highlight'
+" Appearance
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'EAirPeter/vim-studio-dark'
-Plug 'lifepillar/vim-colortemplate'
-Plug 'tikhomirov/vim-glsl'
-Plug 'pprovost/vim-ps1'
-Plug 'lervag/vimtex'
+
+" COC.NVIM
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'EAirPeter/vim-lsp-cxx-highlight'
 "Plug 'tomasiser/vim-code-dark'
 "Plug 'altercation/vim-colors-solarized'
 
+" File types
+Plug 'lifepillar/vim-colortemplate'
+Plug 'tikhomirov/vim-glsl'
+Plug 'beyondmarc/hlsl.vim'
+Plug 'pprovost/vim-ps1'
+Plug 'lervag/vimtex'
+
+" COC.NVIM extensions
 Plug 'EAirPeter/coc-clangd', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-vimtex', {'do': 'yarn install --frozen-lockfile'}
 
 call plug#end()
 
-"""" Color and Themes
+"""" Appearance
 filetype plugin on
 syntax on
 
