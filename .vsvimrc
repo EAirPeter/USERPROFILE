@@ -15,3 +15,4 @@ nmap <leader>rl :source ~/.vsvimrc<CR>
 nmap <leader>rn :vsc ReSharper.ReSharper_Rename<CR>
 
 nmap gd :vsc ReSharper.ReSharper_GotoDeclaration<CR>
+nmap gr :vsc ReSharper.ReSharper_GotoUsage<CR>
