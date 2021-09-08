@@ -1,6 +1,7 @@
 *
 !.gitignore
 !.gitconfig
+!.ideavimrc
 !.vimrc
 !.vsvimrc
 !.vim

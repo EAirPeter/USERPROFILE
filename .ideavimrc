@@ -1,0 +1,25 @@
+"""" Misc
+set backspace=indent,eol,start
+
+set hlsearch
+set incsearch
+
+set history=200
+set showcmd
+
+set number
+
+"""" IdeaVim
+nmap <leader>rl :source ~/.ideavimrc<CR>
+
+nmap <leader>cp :action CopyAbsolutePath<CR>
+
+nmap <leader>rn :action RenameElement<CR>
+
+nmap gd :action GotoDeclaration<CR>
+nmap gr :action FindUsages<CR>
+nmap gf :action GotoSuperMethod<CR>
+nmap gt :action GotoImplementation<CR>
+
+nmap [g :action GotoPrevErrorInSolution<CR>
+nmap ]g :action GotoNextErrorInSolution<CR>

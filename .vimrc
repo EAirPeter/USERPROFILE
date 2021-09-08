@@ -47,6 +47,10 @@ Plug 'beyondmarc/hlsl.vim'
 Plug 'pprovost/vim-ps1'
 Plug 'lervag/vimtex'
 
+" Utilities
+Plug 'will133/vim-dirdiff'
+Plug 'AndrewRadev/linediff.vim'
+
 " COC.NVIM extensions
 Plug 'EAirPeter/coc-clangd', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
@@ -307,6 +311,9 @@ let g:tex_flavor = 'latex'
 "let g:vimtex_view_general_options = '-reuse-instance -forward-search @tex @line @pdf'
 "let g:vimtex_view_general_options_latexmk = '-reuse-instance'
 
+"""" Utilities
+nmap <leader>cp :let @+ = expand("%:p")<CR>
+
 """" Compilation and Execution
 if g:os == 'windows'
   let s:ce_cc = 'clang -Xclang -flto-visibility-public-std -D_CRT_SECURE_NO_WARNINGS'
@@ -436,10 +443,10 @@ au FileType tex       setlocal spell
 au FileType tex       setlocal indentexpr=
 au FileType tex       setlocal tw=99
 
-au FileType markdown  setlocal spell
+"au FileType markdown  setlocal spell
 au FileType markdown  setlocal indentexpr=
 au FileType markdown  setlocal tw=99
 
-au FileType text      setlocal spell
+"au FileType text      setlocal spell
 au FileType text      setlocal indentexpr=
 au FileType text      setlocal tw=99
