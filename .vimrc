@@ -22,6 +22,7 @@ endif
 
 if g:os == 'windows'
   set runtimepath+=~/.vim
+  let g:coc_config_home='~/.vim'
 endif
 
 """" Plugins
@@ -99,6 +100,9 @@ let g:airline_symbols.dirty='⚡'
 map <F10> :echo "hi<" .. synIDattr(synID(line("."),col("."),1),"name") .. '> trans<'
   \ .. synIDattr(synID(line("."),col("."),0),"name") .. "> lo<"
   \ .. synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") .. ">"<CR>
+
+set list
+set listchars=tab:>-
 
 """" No Useless Files
 set nobackup
@@ -349,12 +353,12 @@ let s:cpy_cpp = s:cpy_c
 let s:com_c       = '!' .. s:ce_cc  .. ' -o ' .. s:ce_exec .. ' % ' .. s:ce_cflags
 let s:com_cpp     = '!' .. s:ce_cxx .. ' -o ' .. s:ce_exec .. ' % ' .. s:ce_cflags
 
-let s:arg_c       = ['-std=c99   -O2', '-std=c99   -O0 -g',
-                  \  '-std=c11   -O2', '-std=c11   -O0 -g']
-let s:arg_cpp     = ['-std=c++14 -O2', '-std=c++14 -O0 -g',
-                  \  '-std=c++17 -O2', '-std=c++17 -O0 -g',
-                  \  '-std=c++11 -O2', '-std=c++11 -O0 -g',
-                  \  '-std=c++98 -O2', '-std=c++98 -O0 -g']
+let s:arg_c       = ['-std=c99   -O3', '-std=c99   -O0 -g',
+                  \  '-std=c11   -O3', '-std=c11   -O0 -g']
+let s:arg_cpp     = ['-std=c++14 -O3', '-std=c++14 -O0 -g',
+                  \  '-std=c++17 -O3', '-std=c++17 -O0 -g',
+                  \  '-std=c++11 -O3', '-std=c++11 -O0 -g',
+                  \  '-std=c++98 -O3', '-std=c++98 -O0 -g']
 
 let s:run_c    = '!' .. s:ce_exec
 let s:run_cpp  = '!' .. s:ce_exec
@@ -450,3 +454,7 @@ au FileType markdown  setlocal tw=99
 "au FileType text      setlocal spell
 au FileType text      setlocal indentexpr=
 au FileType text      setlocal tw=99
+
+au FileType c         setlocal sw=4 sts=4 ts=4
+au FileType cpp       setlocal sw=4 sts=4 ts=4
+au FileType cs        setlocal sw=4 sts=4 ts=4

@@ -6,7 +6,6 @@
     "fallbackFlags": [
       "-march=native",
       "-std=c++17",
-      "-ID:\\code\\algo\\include",
       "-D_CRT_SECURE_NO_WARNINGS"
     ],
     "semanticHighlighting": true
