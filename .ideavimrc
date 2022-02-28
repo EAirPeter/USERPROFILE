@@ -15,13 +15,15 @@ set number
 nmap <leader>rl :source ~/.ideavimrc<CR>
 
 nmap <leader>cp :action CopyAbsolutePath<CR>
+nmap <leader>cr :action CopyReference<CR>
 
 nmap <leader>rn :action RenameElement<CR>
 
+nmap <leader>gr :action FindUsages<CR>
+nmap <leader>gf :action GotoSuperMethod<CR>
+nmap <leader>gt :action GotoImplementation<CR>
+
 nmap gd :action GotoDeclaration<CR>
-nmap gr :action FindUsages<CR>
-nmap gf :action GotoSuperMethod<CR>
-nmap gt :action GotoImplementation<CR>
 
 nmap [g :action GotoPrevErrorInSolution<CR>
 nmap ]g :action GotoNextErrorInSolution<CR>
