@@ -25,6 +25,48 @@ if g:os == 'windows'
   let g:coc_config_home='~/.vim'
 endif
 
+"""" LargeFile
+let s:lf_thresh_no_coc = 1 * 1024 * 1024
+let s:lf_thresh_no_filetype = -1
+let s:lf_thresh_no_hlsearch = 8 * 1024 * 1024
+let s:lf_thresh_no_hlwhitespace = -1
+let s:lf_thresh_no_list = -1
+let s:lf_thresh_readonly = -1
+
+function! s:LfIsLarge(fsize, thresh)
+  return a:thresh >= 0 && (a:fsize == -2 || a:fsize >= a:thresh)
+endfunction
+
+function! s:LfBufReadPre(fname)
+  let fsize = a:fname->getfsize()
+  if s:LfIsLarge(fsize, s:lf_thresh_no_coc)
+    let b:coc_enabled = 0
+  endif
+  if s:LfIsLarge(fsize, s:lf_thresh_no_filetype)
+    setl eventignore+=FileType
+  endif
+  if s:LfIsLarge(fsize, s:lf_thresh_no_hlsearch)
+    setl nohlsearch
+  endif
+  if s:LfIsLarge(fsize, s:lf_thresh_no_hlwhitespace)
+    let b:hl_whitespace = 0
+  endif
+  if s:LfIsLarge(fsize, s:lf_thresh_no_list)
+    setl nolist
+  endif
+  if s:LfIsLarge(fsize, s:lf_thresh_readonly)
+    setl bufhidden=unload
+    setl buftype=nowrite
+    setl noswapfile
+    setl undolevels=-1
+  endif
+endfunction
+
+augroup RcLargeFile
+  au!
+  au BufReadPre * call s:LfBufReadPre(expand("<afile>"))
+augroup end
+
 """" Plugins
 let g:plugdir = '~/.vim/plugged'
 
@@ -51,6 +93,7 @@ Plug 'lervag/vimtex'
 " Utilities
 Plug 'will133/vim-dirdiff'
 Plug 'AndrewRadev/linediff.vim'
+Plug 'powerman/vim-plugin-AnsiEsc'
 
 " COC.NVIM extensions
 Plug 'EAirPeter/coc-clangd', {'do': 'yarn install --frozen-lockfile'}
@@ -86,7 +129,7 @@ if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
-" powerline symbols
+" Powerline Symbols
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
@@ -97,10 +140,12 @@ let g:airline_symbols.linenr = '☰'
 let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.dirty='⚡'
 
+" Syntax Debugging
 map <F10> :echo "hi<" .. synIDattr(synID(line("."),col("."),1),"name") .. '> trans<'
   \ .. synIDattr(synID(line("."),col("."),0),"name") .. "> lo<"
   \ .. synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") .. ">"<CR>
 
+" Tab Visualization
 set list
 set listchars=tab:>-
 
@@ -145,23 +190,47 @@ set belloff=all
 set wildmenu
 
 """" Highlights
-
-" Highlight long lines.
-"highlight LongLine ctermbg=red guibg=red
-"au BufWinEnter * let w:m0 = matchadd('LongLine', '\%>80v.\+', -1)
-
-" Highlight trailing spaces.
 highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+\%#\@<!$/
-au InsertLeave * redraw!
 
-"""" Git
-augroup VimStartup
+function! s:HlUpdatePattern(is_ins)
+  if w:mid_whitespace
+    call matchdelete(w:mid_whitespace)
+  endif
+  if a:is_ins
+    let w:mid_whitespace = matchadd('ExtraWhitespace', '\s\+\%#\@<!$')
+  else
+    let w:mid_whitespace = matchadd('ExtraWhitespace', '\s\+$')
+  endif
+endfunction
+
+function! s:HlWinEnter()
+  if !exists('b:hl_whitespace')
+    let b:hl_whitespace = 1
+  endif
+  if !exists('w:mid_whitespace')
+    let w:mid_whitespace = 0
+  endif
+  if b:hl_whitespace
+    call s:HlUpdatePattern(mode() =~ 'i.*')
+    augroup RcHlWhitespace
+      au! * <buffer>
+      au InsertEnter <buffer> call s:HlUpdatePattern(1)
+      au InsertLeave <buffer> call s:HlUpdatePattern(0)
+    augroup end
+  else
+    if w:mid_whitespace
+      call matchdelete(w:mid_whitespace)
+      let w:mid_whitespace = 0
+    endif
+    augroup RcHlWhitespace
+      au! * <buffer>
+    augroup end
+  endif
+endfunction
+
+augroup RcHighlights
   au!
-  au BufReadPost *
-    \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
-    \ |   exe "normal! g`\""
-    \ | endif
+  au BufWinEnter,WinEnter * call s:HlWinEnter()
 augroup end
 
 """" COC.NVIM
@@ -223,9 +292,9 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> K :call <SID>CocShowDocumentation()<CR>
 
-function! s:show_documentation()
+function! s:CocShowDocumentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
   else
@@ -234,7 +303,7 @@ function! s:show_documentation()
 endfunction
 
 " Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
+au CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
@@ -243,12 +312,12 @@ nmap <leader>rn <Plug>(coc-rename)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
-augroup mygroup
-  autocmd!
+augroup RcCoc
+  au!
   " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  au FileType typescript,json setl formatexpr=CocAction('formatSelected')
   " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+  au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
 " Applying codeAction to the selected region.
@@ -381,7 +450,7 @@ if g:os == 'windows'
   let s:run_tex = '!%<.pdf'
 endif
 
-function! CeAppendAll(cmd, args)
+function! s:CeAppendAll(cmd, args)
   let res = a:cmd
   for arg in a:args
     res ..= ' ' .. arg
@@ -389,7 +458,7 @@ function! CeAppendAll(cmd, args)
   return res
 endfunction
 
-function! CeCompile(idx, ...)
+function! s:CeCompile(idx, ...)
   " F9, C-F9, F7, C-F7, F6, C-F6, F11, C-F11
   let cmd = get(s:, 'com_' .. &filetype, '')
   if cmd == ''
@@ -397,10 +466,10 @@ function! CeCompile(idx, ...)
     return
   endif
   let cmd ..= ' ' .. get(s:, 'arg_' .. &filetype, [])->get(a:idx, '')
-  execute CeAppendAll(cmd, a:000)
+  execute s:CeAppendAll(cmd, a:000)
 endfunction
 
-function! CeCopy(...)
+function! s:CeCopy(...)
   " C-F8
   let cmd = get(s:, 'cpy_' .. &filetype, '')
   if cmd == ''
@@ -411,50 +480,54 @@ function! CeCopy(...)
   execute cmd
 endfunction
 
-function! CeRun(...)
+function! s:CeRun(...)
   " F8
   let cmd = get(s:, 'run_' .. &filetype, '')
   if cmd == ''
     echo 'No run command set associated with filetype=' .. &filetype
     return
   endif
-  execute CeAppendAll(cmd, a:000)
+  execute s:CeAppendAll(cmd, a:000)
 endfunction
 
-function! CeDebug(...)
+function! s:CeDebug(...)
   " F5
   let cmd = get(s:, 'dbg_' .. &filetype, '')
   if cmd == ''
     echo 'No debug command associated with filetype=' .. &filetype
     return
   endif
-  execute CeAppendAll(cmd, a:000)
+  execute s:CeAppendAll(cmd, a:000)
 endfunction
 
-nnoremap <F5>    :call CeDebug()<CR>
-nnoremap <F8>    :call CeRun()<CR>
-nnoremap <C-F8>  :call CeCopy()<CR>
-nnoremap <F9>    :call CeCompile(0)<CR>
-nnoremap <C-F9>  :call CeCompile(1)<CR>
-nnoremap <F7>    :call CeCompile(2)<CR>
-nnoremap <C-F7>  :call CeCompile(3)<CR>
-nnoremap <F6>    :call CeCompile(4)<CR>
-nnoremap <C-F6>  :call CeCompile(5)<CR>
-nnoremap <F11>   :call CeCompile(6)<CR>
-nnoremap <C-F11> :call CeCompile(7)<CR>
+nnoremap <F5>    :call <SID>CeDebug()<CR>
+nnoremap <F8>    :call <SID>CeRun()<CR>
+nnoremap <C-F8>  :call <SID>CeCopy()<CR>
+nnoremap <F9>    :call <SID>CeCompile(0)<CR>
+nnoremap <C-F9>  :call <SID>CeCompile(1)<CR>
+nnoremap <F7>    :call <SID>CeCompile(2)<CR>
+nnoremap <C-F7>  :call <SID>CeCompile(3)<CR>
+nnoremap <F6>    :call <SID>CeCompile(4)<CR>
+nnoremap <C-F6>  :call <SID>CeCompile(5)<CR>
+nnoremap <F11>   :call <SID>CeCompile(6)<CR>
+nnoremap <C-F11> :call <SID>CeCompile(7)<CR>
 
-au FileType tex       setlocal spell
-au FileType tex       setlocal indentexpr=
-au FileType tex       setlocal tw=99
+augroup RcFileTypes
+  au!
 
-"au FileType markdown  setlocal spell
-au FileType markdown  setlocal indentexpr=
-au FileType markdown  setlocal tw=99
+  au FileType tex       setl spell
+  au FileType tex       setl indentexpr=
+  au FileType tex       setl tw=99
 
-"au FileType text      setlocal spell
-au FileType text      setlocal indentexpr=
-au FileType text      setlocal tw=99
+  "au FileType markdown  setl spell
+  au FileType markdown  setl indentexpr=
+  au FileType markdown  setl tw=99
 
-au FileType c         setlocal sw=4 sts=4 ts=4
-au FileType cpp       setlocal sw=4 sts=4 ts=4
-au FileType cs        setlocal sw=4 sts=4 ts=4
+  "au FileType text      setl spell
+  au FileType text      setl indentexpr=
+  au FileType text      setl tw=99
+
+  au FileType c         setl sw=4 sts=4 ts=4
+  au FileType cpp       setl sw=4 sts=4 ts=4
+  au FileType cs        setl sw=4 sts=4 ts=4
+augroup end
