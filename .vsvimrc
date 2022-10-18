@@ -13,13 +13,22 @@ set number
 nmap <leader>rl :source ~/.vsvimrc<CR>
 
 nmap <leader>cp :vsc File.CopyFullPath<CR>
+"nmap <leader>cr :vsc File.CopyFullPath<CR>
 
-nmap <leader>rn :vsc ReSharper.ReSharper_Rename<CR>
+nmap <leader>rn :vsc Refactor.Rename<CR>
 
-nmap gd :vsc ReSharper.ReSharper_GotoDeclaration<CR>
-nmap gr :vsc ReSharper.ReSharper_FindUsages<CR>
-nmap gf :vsc ReSharper.ReSharper_GotoBase<CR>
-nmap gt :vsc ReSharper.ReSharper_GotoImplementations<CR>
+nmap <leader>gr :vsc Edit.FindAllReferences<CR>
+nmap <leader>gf :vsc Edit.GotoBase<CR>
+nmap <leader>gt :vsc Edit.GotoImplementations<CR>
 
-nmap [g :vsc ReSharper.ReSharper_GotoPrevErrorInSolution<CR>
-nmap ]g :vsc ReSharper.ReSharper_GotoNextErrorInSolution<CR>
+nmap gd :vsc Edit.GotoDeclaration<CR>
+
+"nmap <leader>rn :vsc ReSharper.ReSharper_Rename<CR>
+"
+"nmap gd :vsc ReSharper.ReSharper_GotoDeclaration<CR>
+"nmap <leader>gr :vsc ReSharper.ReSharper_FindUsages<CR>
+"nmap <leader>gf :vsc ReSharper.ReSharper_GotoBase<CR>
+"nmap <leader>gt :vsc ReSharper.ReSharper_GotoImplementations<CR>
+"
+"nmap [g :vsc ReSharper.ReSharper_GotoPrevErrorInSolution<CR>
+"nmap ]g :vsc ReSharper.ReSharper_GotoNextErrorInSolution<CR>
