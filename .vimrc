@@ -388,6 +388,7 @@ let g:tex_flavor = 'latex'
 nmap <leader>cp :let @+ = expand("%:p")<CR>
 nmap <leader>fd :set ff=dos<CR>
 nmap <leader>fu :set ff=unix<CR>
+nmap <leader>gh :CocCommand clangd.switchSourceHeader<CR>
 
 """" Compilation and Execution
 if g:os == 'windows'

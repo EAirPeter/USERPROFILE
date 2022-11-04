@@ -20,6 +20,7 @@ nmap <leader>rn :vsc Refactor.Rename<CR>
 nmap <leader>gr :vsc Edit.FindAllReferences<CR>
 nmap <leader>gf :vsc Edit.GotoBase<CR>
 nmap <leader>gt :vsc Edit.GotoImplementations<CR>
+nmap <leader>gh :vsc EditorContextMenus.CodeWindow.ToggleHeaderCodeFile<CR>
 
 nmap gd :vsc Edit.GotoDeclaration<CR>
 
