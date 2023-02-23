@@ -29,6 +29,7 @@ endif
 let s:lf_thresh_no_coc = 1 * 1024 * 1024
 let s:lf_thresh_no_filetype = -1
 let s:lf_thresh_no_hlsearch = 8 * 1024 * 1024
+let s:lf_thresh_no_incsearch = 8 * 1024 * 1024
 let s:lf_thresh_no_hlwhitespace = -1
 let s:lf_thresh_no_list = -1
 let s:lf_thresh_readonly = -1
@@ -47,6 +48,9 @@ function! s:LfBufReadPre(fname)
   endif
   if s:LfIsLarge(fsize, s:lf_thresh_no_hlsearch)
     setl nohlsearch
+  endif
+  if s:LfIsLarge(fsize, s:lf_thresh_no_incsearch)
+    setl noincsearch
   endif
   if s:LfIsLarge(fsize, s:lf_thresh_no_hlwhitespace)
     let b:hl_whitespace = 0
@@ -425,12 +429,12 @@ let s:cpy_cpp = s:cpy_c
 let s:com_c       = '!' .. s:ce_cc  .. ' -o ' .. s:ce_exec .. ' "%" ' .. s:ce_cflags
 let s:com_cpp     = '!' .. s:ce_cxx .. ' -o ' .. s:ce_exec .. ' "%" ' .. s:ce_cflags
 
-let s:arg_c       = ['-std=c99   -O3', '-std=c99   -O0 -g',
-                  \  '-std=c11   -O3', '-std=c11   -O0 -g']
-let s:arg_cpp     = ['-std=c++14 -O3', '-std=c++14 -O0 -g',
-                  \  '-std=c++17 -O3', '-std=c++17 -O0 -g',
-                  \  '-std=c++11 -O3', '-std=c++11 -O0 -g',
-                  \  '-std=c++98 -O3', '-std=c++98 -O0 -g']
+let s:arg_c       = ['-std=c99   -O3 -march=native', '-std=c99   -O0 -g',
+                  \  '-std=c11   -O3 -march=native', '-std=c11   -O0 -g']
+let s:arg_cpp     = ['-std=c++14 -O3 -march=native', '-std=c++14 -O0 -g',
+                  \  '-std=c++17 -O3 -march=native', '-std=c++17 -O0 -g',
+                  \  '-std=c++11 -O3 -march=native', '-std=c++11 -O0 -g',
+                  \  '-std=c++98 -O3 -march=native', '-std=c++98 -O0 -g']
 
 let s:run_c    = '!' .. s:ce_exec
 let s:run_cpp  = '!' .. s:ce_exec
