@@ -432,7 +432,7 @@ let s:com_cpp     = '!' .. s:ce_cxx .. ' -o ' .. s:ce_exec .. ' "%" ' .. s:ce_cf
 let s:arg_c       = ['-std=c99   -O3 -march=native', '-std=c99   -O0 -g',
                   \  '-std=c11   -O3 -march=native', '-std=c11   -O0 -g']
 let s:arg_cpp     = ['-std=c++14 -O3 -march=native', '-std=c++14 -O0 -g',
-                  \  '-std=c++17 -O3 -march=native', '-std=c++17 -O0 -g',
+                  \  '-std=c++20 -O3 -march=native', '-std=c++20 -O0 -g',
                   \  '-std=c++11 -O3 -march=native', '-std=c++11 -O0 -g',
                   \  '-std=c++98 -O3 -march=native', '-std=c++98 -O0 -g']
 

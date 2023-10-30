@@ -22,7 +22,7 @@ nmap <leader>gf :vsc Edit.GotoBase<CR>
 nmap <leader>gt :vsc Edit.GotoImplementations<CR>
 nmap <leader>gh :vsc EditorContextMenus.CodeWindow.ToggleHeaderCodeFile<CR>
 
-nmap gd :vsc Edit.GotoDeclaration<CR>
+nmap gd :vsc Edit.GotoDefinition<CR>
 
 "nmap <leader>rn :vsc ReSharper.ReSharper_Rename<CR>
 "
