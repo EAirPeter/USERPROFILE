@@ -89,6 +89,7 @@ Plug 'tikhomirov/vim-glsl'
 Plug 'beyondmarc/hlsl.vim'
 Plug 'pprovost/vim-ps1'
 Plug 'lervag/vimtex'
+Plug 'shiracamus/vim-syntax-x86-objdump-d'
 
 " Utilities
 Plug 'will133/vim-dirdiff'
@@ -422,12 +423,12 @@ let s:cpy_cpp = s:cpy_c
 let s:com_c       = '!' .. s:ce_cc  .. ' -o ' .. s:ce_exec .. ' % ' .. s:ce_cflags
 let s:com_cpp     = '!' .. s:ce_cxx .. ' -o ' .. s:ce_exec .. ' % ' .. s:ce_cflags
 
-let s:arg_c       = ['-std=c99   -O3', '-std=c99   -O0 -g',
-                  \  '-std=c11   -O3', '-std=c11   -O0 -g']
-let s:arg_cpp     = ['-std=c++14 -O3', '-std=c++14 -O0 -g',
-                  \  '-std=c++17 -O3', '-std=c++17 -O0 -g',
-                  \  '-std=c++11 -O3', '-std=c++11 -O0 -g',
-                  \  '-std=c++98 -O3', '-std=c++98 -O0 -g']
+let s:arg_c       = ['-std=c99   -O3 -march=native', '-std=c99   -O0 -g -march=native',
+                  \  '-std=c11   -O3 -march=native', '-std=c11   -O0 -g -march=native']
+let s:arg_cpp     = ['-std=c++14 -O3 -march=native', '-std=c++14 -O0 -g -march=native',
+                  \  '-std=c++20 -O3 -march=native', '-std=c++20 -O0 -g -march=native',
+                  \  '-std=c++11 -O3 -march=native', '-std=c++11 -O0 -g -march=native',
+                  \  '-std=c++98 -O3 -march=native', '-std=c++98 -O0 -g -march=native']
 
 let s:run_c    = '!' .. s:ce_exec
 let s:run_cpp  = '!' .. s:ce_exec
@@ -475,7 +476,7 @@ function! s:CeCopy(...)
   if cmd == ''
     let cmd = '!' .. s:ce_clip .. ' < %'
   else
-    let cmd = CeAppendAll(cmd, a:000) .. ' | ' .. s:ce_clip
+    let cmd = s:CeAppendAll(cmd, a:000) .. ' | ' .. s:ce_clip
   endif
   execute cmd
 endfunction
