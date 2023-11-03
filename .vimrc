@@ -29,6 +29,7 @@ endif
 let s:lf_thresh_no_coc = 1 * 1024 * 1024
 let s:lf_thresh_no_filetype = -1
 let s:lf_thresh_no_hlsearch = 8 * 1024 * 1024
+let s:lf_thresh_no_incsearch = 8 * 1024 * 1024
 let s:lf_thresh_no_hlwhitespace = -1
 let s:lf_thresh_no_list = -1
 let s:lf_thresh_readonly = -1
@@ -47,6 +48,9 @@ function! s:LfBufReadPre(fname)
   endif
   if s:LfIsLarge(fsize, s:lf_thresh_no_hlsearch)
     setl nohlsearch
+  endif
+  if s:LfIsLarge(fsize, s:lf_thresh_no_incsearch)
+    setl noincsearch
   endif
   if s:LfIsLarge(fsize, s:lf_thresh_no_hlwhitespace)
     let b:hl_whitespace = 0
@@ -387,19 +391,22 @@ let g:tex_flavor = 'latex'
 
 """" Utilities
 nmap <leader>cp :let @+ = expand("%:p")<CR>
+nmap <leader>fd :set ff=dos<CR>
+nmap <leader>fu :set ff=unix<CR>
+nmap <leader>gh :CocCommand clangd.switchSourceHeader<CR>
 
 """" Compilation and Execution
 if g:os == 'windows'
   let s:ce_cc = 'clang -Xclang -flto-visibility-public-std -D_CRT_SECURE_NO_WARNINGS'
   let s:ce_cxx = 'clang++ -Xclang -flto-visibility-public-std -D_CRT_SECURE_NO_WARNINGS'
   let s:ce_include = ['D:\\code\\algo\\include']
-  let s:ce_exec = '%<.exe'
+  let s:ce_exec = '"%<.exe"'
   let s:ce_clip = 'clip'
 elseif g:os == 'wsl'
   let s:ce_cc = 'gcc'
   let s:ce_cxx = 'g++'
   let s:ce_include = ['/mnt/code/algo/include']
-  let s:ce_exec = './%<.exe'
+  let s:ce_exec = '"./%<.exe"'
   let s:ce_clip = '/mnt/c/Windows/System32/clip.exe'
 elseif g:os == 'linux'
   let s:ce_cc = 'gcc'
@@ -414,14 +421,14 @@ for inc in s:ce_include
   let s:ce_cflags ..= ' -I' .. inc
 endfor
 
-let s:cpy_c = '!cppcp %'
+let s:cpy_c = '!cppcp "%"'
 for inc in s:ce_include
   let s:cpy_c ..= ' ' .. inc
 endfor
 let s:cpy_cpp = s:cpy_c
 
-let s:com_c       = '!' .. s:ce_cc  .. ' -o ' .. s:ce_exec .. ' % ' .. s:ce_cflags
-let s:com_cpp     = '!' .. s:ce_cxx .. ' -o ' .. s:ce_exec .. ' % ' .. s:ce_cflags
+let s:com_c       = '!' .. s:ce_cc  .. ' -o ' .. s:ce_exec .. ' "%" ' .. s:ce_cflags
+let s:com_cpp     = '!' .. s:ce_cxx .. ' -o ' .. s:ce_exec .. ' "%" ' .. s:ce_cflags
 
 let s:arg_c       = ['-std=c99   -O3 -march=native', '-std=c99   -O0 -g -march=native',
                   \  '-std=c11   -O3 -march=native', '-std=c11   -O0 -g -march=native']
@@ -435,20 +442,20 @@ let s:run_cpp  = '!' .. s:ce_exec
 let s:dbg_c    = '!gdb ' .. s:ce_exec
 let s:dbg_cpp  = '!gdb ' .. s:ce_exec
 
-let s:com_nasm = '!nasm -f bin % -o ' .. s:ce_exec .. ' && chmod +x ' .. s:ce_exec
+let s:com_nasm = '!nasm -f bin "%" -o ' .. s:ce_exec .. ' && chmod +x ' .. s:ce_exec
 let s:run_nasm = '!' .. s:ce_exec
 
-let s:com_java = '!javac %'
-let s:run_java = '!java %<'
+let s:com_java = '!javac "%"'
+let s:run_java = '!java "%<"'
 
 let s:com_rust = '!rustc -o ' .. s:ce_exec .. ' %'
 let s:run_rust = '!' .. s:ce_exec
 
-let s:com_tex = '!xelatex %'
-let s:com_bib = '!bibtex %'
+let s:com_tex = '!xelatex "%"'
+let s:com_bib = '!bibtex "%"'
 
 if g:os == 'windows'
-  let s:run_tex = '!%<.pdf'
+  let s:run_tex = '!"%<.pdf"'
 endif
 
 function! s:CeAppendAll(cmd, args)

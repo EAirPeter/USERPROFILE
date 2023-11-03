@@ -22,6 +22,7 @@ nmap <leader>rn :action RenameElement<CR>
 nmap <leader>gr :action FindUsages<CR>
 nmap <leader>gf :action GotoSuperMethod<CR>
 nmap <leader>gt :action GotoImplementation<CR>
+nmap <leader>gh :action SwitchHeaderSource<CR>
 
 nmap gd :action GotoDeclaration<CR>
 
