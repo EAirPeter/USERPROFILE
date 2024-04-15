@@ -111,7 +111,11 @@ call plug#end()
 filetype plugin on
 syntax on
 
-set guifont=Consolas_Nerd_Font_Mono:h12
+if g:os == 'windows'
+  set guifont=Consolas_Nerd_Font_Mono:h12
+elseif g:os == 'macosx'
+  set guifont=ConsolasNerdFontM-:h12
+endif
 
 if (has('termguicolors'))
   set termguicolors
@@ -414,6 +418,12 @@ elseif g:os == 'linux'
   let s:ce_include = []
   let s:ce_exec = './%<'
   let s:ce_clip = 'xclip'
+elseif g:os == 'macosx'
+  let s:ce_cc = 'clang'
+  let s:ce_cxx = 'clang++'
+  let s:ce_include = []
+  let s:ce_exec = './%<'
+  let s:ce_clip = 'pbcopy'
 endif
 
 let s:ce_cflags = '-DVIOLOCAL -Wall -Wconversion -Wextra -Wformat'
