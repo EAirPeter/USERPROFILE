@@ -18,3 +18,16 @@
 [user]
 	email = VioletCrestfall@hotmail.com
 	name = EAirPeter
+
+[diff]
+	tool = p4
+[difftool "p4"]
+	cmd = p4merge $LOCAL $REMOTE
+
+[merge]
+	tool = p4
+[mergetool]
+	keepBackup = false
+[mergetool "p4"]
+	cmd = p4merge $BASE $REMOTE $LOCAL $MERGED
+	trustExitCode = false
