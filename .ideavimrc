@@ -12,19 +12,33 @@ set showcmd
 set number
 
 """" IdeaVim
+if &ide =~? 'clion'
+    let ide = 'clion'
+elseif &ide =~? 'rider'
+    let ide = 'rider'
+else
+    let ide = 'unknown'
+endif
+
 nmap <leader>rl :source ~/.ideavimrc<CR>
+nmap <leader>pi :echo &ide ide<CR>
 
-nmap <leader>cp :action CopyAbsolutePath<CR>
-nmap <leader>cr :action CopyReference<CR>
+nmap <leader>cp <Action>(CopyAbsolutePath)
+nmap <leader>cr <Action>(CopyReference)
 
-nmap <leader>rn :action RenameElement<CR>
+nmap <leader>rn <Action>(RenameElement)
 
-nmap <leader>gr :action FindUsages<CR>
-nmap <leader>gf :action GotoSuperMethod<CR>
-nmap <leader>gt :action GotoImplementation<CR>
-nmap <leader>gh :action SwitchHeaderSource<CR>
+nmap <leader>gr <Action>(FindUsages)
+nmap <leader>gf <Action>(GotoSuperMethod)
+nmap <leader>gt <Action>(GotoImplementation)
 
-nmap gd :action GotoDeclaration<CR>
+if ide == 'clion'
+    nmap <leader>gh <Action>(CIDR.Lang.SwitchHeaderSource)
+else
+    nmap <leader>gh <Action>(SwitchHeaderSource)
+endif
 
-nmap [g :action GotoPrevErrorInSolution<CR>
-nmap ]g :action GotoNextErrorInSolution<CR>
+nmap gd <Action>(GotoDeclaration)
+
+nmap [g <Action>(GotoPrevErrorInSolution)
+nmap ]g <Action>(GotoNextErrorInSolution)
