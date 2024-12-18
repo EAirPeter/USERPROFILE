@@ -32,11 +32,11 @@ nmap <leader>gr <Action>(FindUsages)
 nmap <leader>gf <Action>(GotoSuperMethod)
 nmap <leader>gt <Action>(GotoImplementation)
 
-if ide == 'clion'
-    nmap <leader>gh <Action>(CIDR.Lang.SwitchHeaderSource)
-else
+"if ide == 'clion'
+    "nmap <leader>gh <Action>(CIDR.Lang.SwitchHeaderSource)
+"else
     nmap <leader>gh <Action>(SwitchHeaderSource)
-endif
+"endif
 
 nmap gd <Action>(GotoDeclaration)
 
