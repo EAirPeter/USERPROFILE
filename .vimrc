@@ -83,7 +83,8 @@ Plug 'EAirPeter/vim-studio-dark'
 
 " COC.NVIM
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'EAirPeter/vim-lsp-cxx-highlight'
+" vim-lsp-cxx-highlight is no longer needed by coc-clangd
+"Plug 'EAirPeter/vim-lsp-cxx-highlight'
 "Plug 'tomasiser/vim-code-dark'
 "Plug 'altercation/vim-colors-solarized'
 
@@ -100,10 +101,11 @@ Plug 'will133/vim-dirdiff'
 Plug 'AndrewRadev/linediff.vim'
 Plug 'powerman/vim-plugin-AnsiEsc'
 
-" COC.NVIM extensions
-Plug 'EAirPeter/coc-clangd', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-vimtex', {'do': 'yarn install --frozen-lockfile'}
+" COC.NVIM extensions are now handled by :CocInstall
+"" COC.NVIM extensions
+"Plug 'EAirPeter/coc-clangd', {'do': 'yarn install --frozen-lockfile'}
+"Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
+"Plug 'neoclide/coc-vimtex', {'do': 'yarn install --frozen-lockfile'}
 
 call plug#end()
 
