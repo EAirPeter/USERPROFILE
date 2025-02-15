@@ -83,10 +83,6 @@ Plug 'EAirPeter/vim-studio-dark'
 
 " COC.NVIM
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" vim-lsp-cxx-highlight is no longer needed by coc-clangd
-"Plug 'EAirPeter/vim-lsp-cxx-highlight'
-"Plug 'tomasiser/vim-code-dark'
-"Plug 'altercation/vim-colors-solarized'
 
 " File types
 Plug 'lifepillar/vim-colortemplate'
@@ -100,12 +96,6 @@ Plug 'shiracamus/vim-syntax-x86-objdump-d'
 Plug 'will133/vim-dirdiff'
 Plug 'AndrewRadev/linediff.vim'
 Plug 'powerman/vim-plugin-AnsiEsc'
-
-" COC.NVIM extensions are now handled by :CocInstall
-"" COC.NVIM extensions
-"Plug 'EAirPeter/coc-clangd', {'do': 'yarn install --frozen-lockfile'}
-"Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
-"Plug 'neoclide/coc-vimtex', {'do': 'yarn install --frozen-lockfile'}
 
 call plug#end()
 
@@ -275,26 +265,9 @@ set updatetime=300
 " diagnostics appear/become resolved
 set signcolumn=yes
 
-" Use tab for trigger completion with characters ahead and navigate
-" NOTE: There's always complete item selected by default, you may want to enable
-" no select by `"suggest.noselect": true` in your configuration file
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+" Use tab/<CR> to accept the completion
+inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#confirm() : "\<TAB>"
+inoremap <silent><expr> <CR>  coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 " Use <c-space> to trigger completion
 if has('nvim')
