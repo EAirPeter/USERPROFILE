@@ -93,6 +93,7 @@ Plug 'lervag/vimtex'
 Plug 'shiracamus/vim-syntax-x86-objdump-d'
 
 " Utilities
+Plug 'tpope/vim-sleuth'
 Plug 'will133/vim-dirdiff'
 Plug 'AndrewRadev/linediff.vim'
 Plug 'powerman/vim-plugin-AnsiEsc'
