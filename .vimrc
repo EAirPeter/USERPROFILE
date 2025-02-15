@@ -253,6 +253,17 @@ let g:coc_global_extensions = ['coc-clangd',
                             \  'coc-pyright',
                             \  'coc-vimtex']
 
+" Semantic Tokens
+let g:coc_default_semantic_highlight_groups = 0
+
+hi link CocSemTypeClass         Type
+hi link CocSemTypeComment       Comment
+hi link CocSemTypeEnum          Type
+hi link CocSemTypeEnumMember    Constant
+hi link CocSemTypeMacro         Macro
+hi link CocSemTypeNamespace     Type
+hi link CocSemTypeTypeParameter Type
+
 " Do not pass message to ins-completion-menu
 "set shortmess+=c
 
