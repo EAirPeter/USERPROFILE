@@ -84,7 +84,7 @@ Plug 'EAirPeter/vim-studio-dark'
 " COC.NVIM
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" File types
+" File Types
 Plug 'lifepillar/vim-colortemplate'
 Plug 'tikhomirov/vim-glsl'
 Plug 'beyondmarc/hlsl.vim'
@@ -241,7 +241,7 @@ augroup end
 let g:coc_global_extensions = ['coc-clangd',
                             \  'coc-json',
                             \  'coc-pyright',
-                            \  'coc-vimtex']
+                            \  'coc-vimlsp']
 
 " Semantic Tokens
 let g:coc_default_semantic_highlight_groups = 0
