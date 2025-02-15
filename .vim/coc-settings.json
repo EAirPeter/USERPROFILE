@@ -10,5 +10,6 @@
       "-D_CRT_SECURE_NO_WARNINGS"
     ],
     "semanticHighlighting": true
-  }
+  },
+  "semanticTokens.enable": true
 }

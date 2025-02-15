@@ -244,7 +244,14 @@ augroup RcHighlights
   au BufWinEnter,WinEnter * call s:HlWinEnter()
 augroup end
 
+
 """" COC.NVIM
+
+" Extensions
+let g:coc_global_extensions = ['coc-clangd',
+                            \  'coc-json',
+                            \  'coc-pyright',
+                            \  'coc-vimtex']
 
 " Do not pass message to ins-completion-menu
 "set shortmess+=c
