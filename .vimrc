@@ -110,6 +110,8 @@ elseif g:os == 'macosx'
   set guifont=ConsolasNerdFontM-:h12
 endif
 
+set guioptions-=T
+
 if (has('termguicolors'))
   set termguicolors
 endif
