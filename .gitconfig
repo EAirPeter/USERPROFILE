@@ -9,6 +9,7 @@
 [core]
 	symlinks = true
 	autocrlf = input
+	eol = lf
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -32,3 +33,8 @@
 [mergetool "p4"]
 	cmd = p4merge $BASE $REMOTE $LOCAL $MERGED
 	trustExitCode = false
+[mergetool "gvim"]
+	cmd = gvim -d $MERGED $LOCAL $BASE $REMOTE -c \"wincmd J\"
+	trustExitCode = false
+[mergetool "bc"]
+	path = C:/Program Files/Beyond Compare 5/BComp.exe
