@@ -1,0 +1,7 @@
+interface:
+  display_name: "Karpathy Guidelines"
+  short_description: "Surface assumptions, simplify, and verify code"
+  default_prompt: "Use $karpathy-guidelines to surface material assumptions, choose the simplest viable solution, define clear success criteria, and verify this coding task."
+
+policy:
+  allow_implicit_invocation: true

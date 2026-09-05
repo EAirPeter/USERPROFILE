@@ -1,11 +1,23 @@
 *
+
+# Codex
+!/.codex/
+!/.codex/**
+
+# Git
 !.gitignore
 !.gitconfig
-!.ideavimrc
+
+# P4
 !.p4aliases
 !.p4enviro
+
+# Vim
+!.ideavimrc
 !.vimrc
 !.vsvimrc
 !.vim
-!.zshrc
 !.vim/*
+
+# zsh
+!.zshrc

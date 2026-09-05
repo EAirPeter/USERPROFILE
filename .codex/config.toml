@@ -1,0 +1,18 @@
+[features.context_management]
+experimental_mode = true
+
+[desktop]
+followUpQueueMode = "queue"
+appearanceTheme = "dark"
+appearanceDarkCodeThemeId = "codex"
+composerEnterBehavior = "cmdAlways"
+enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
+show-context-window-usage = true
+composerPlainTextMode = true
+
+[desktop.open-in-target-preferences]
+global = "systemDefault"
+
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "context-remaining", "context-used", "five-hour-limit", "weekly-limit", "context-window-size", "fast-mode"]
+status_line_use_colors = true

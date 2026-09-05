@@ -1,0 +1,7 @@
+interface:
+  display_name: "P4 Safe Workflow"
+  short_description: "Run Perforce workflows safely on Windows"
+  default_prompt: "Use $p4-safe-workflow to inspect or update this Perforce workspace safely."
+
+policy:
+  allow_implicit_invocation: true
