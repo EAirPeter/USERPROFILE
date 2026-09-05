@@ -1,5 +1,7 @@
 {
   "inlayHint.enable": false,
+  "npm.binPath": "pnpm",
+  "semanticTokens.enable": true,
   "clangd": {
     "enabled": true,
     "arguments": [],
@@ -9,6 +11,5 @@
       "-std=c++23",
       "-D_CRT_SECURE_NO_WARNINGS"
     ]
-  },
-  "semanticTokens.enable": true
+  }
 }

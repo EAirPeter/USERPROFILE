@@ -414,7 +414,7 @@ if g:os == 'windows'
   let s:ce_cc = 'clang -Xclang -flto-visibility-public-std -D_CRT_SECURE_NO_WARNINGS'
   let s:ce_cxx = 'clang++ -Xclang -flto-visibility-public-std -D_CRT_SECURE_NO_WARNINGS'
   let s:ce_include = ['D:\\code\\algo\\include']
-  let s:ce_exec = '"%<.exe"'
+  let s:ce_exec = '.\"%<.exe"'
   let s:ce_clip = 'clip'
 elseif g:os == 'wsl'
   let s:ce_cc = 'gcc'
