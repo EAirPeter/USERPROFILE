@@ -22,12 +22,14 @@
 	name = EAirPeter
 
 [diff]
-	tool = p4
+	tool = bc
 [difftool "p4"]
 	cmd = p4merge $LOCAL $REMOTE
+[difftool "bc"]
+	path = C:/Program Files/Beyond Compare 5/BComp.exe
 
 [merge]
-	tool = p4
+	tool = bc
 [mergetool]
 	keepBackup = false
 [mergetool "p4"]
