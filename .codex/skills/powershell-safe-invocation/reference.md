@@ -40,10 +40,10 @@ Each layer may reinterpret quotes, backslashes, dollar signs, backticks, pipes, 
 Correct:
 
 ```powershell
-$exe = 'C:\Program Files\App\tool.exe'
+$exe = '.\App Folder\tool.exe'
 $nativeArgs = @(
     '--input'
-    'C:\Data Folder\input.json'
+    '.\Data Folder\input.json'
     '--name'
     'value with spaces'
     '--empty'
@@ -142,7 +142,7 @@ $rows | Format-Table -AutoSize
 Use single quotes for literal paths and text:
 
 ```powershell
-$path = 'C:\Program Files\App\data.json'
+$path = '.\App Folder\data.json'
 ```
 
 Use double quotes only when expansion is needed:
@@ -226,7 +226,7 @@ Do not add `-ExecutionPolicy Bypass` by habit.
 When an outer PowerShell must invoke a short inner `-Command`, use an outer single-quoted script string so the outer process does not expand inner variables:
 
 ```powershell
-pwsh.exe -NoLogo -NoProfile -Command '$p = "C:\Data Folder\input.txt"; Test-Path -LiteralPath $p'
+pwsh.exe -NoLogo -NoProfile -Command '$p = ".\Data Folder\input.txt"; Test-Path -LiteralPath $p'
 ```
 
 Use a `.ps1` file instead when both layers need variables, paths, pipelines, JSON, or here-strings.
@@ -287,7 +287,7 @@ Get-Command Get-FileHash -Syntax
 For example, if `Format-Hex -Count` is unavailable, limit the pipeline instead:
 
 ```powershell
-Format-Hex -LiteralPath 'C:\Data\buffer.bin' | Select-Object -First 2
+Format-Hex -LiteralPath '.\Data\buffer.bin' | Select-Object -First 2
 ```
 
 If a cmdlet is unexpectedly missing, inspect `$env:PSModulePath` and installed modules before assuming it is unavailable.
@@ -320,12 +320,12 @@ Some execution hosts reject inline recursive delete or move commands before Powe
 
 ### Mapped drives
 
-Mapped drives are scoped to a user and logon session. If `X:\...` works interactively but not in automation:
+Mapped drives are scoped to a user and logon session. If a mapped drive works interactively but fails in automation, supply the drive letter and the path to an expected file:
 
 ```powershell
 whoami
-Get-PSDrive -Name X -ErrorAction SilentlyContinue
-Test-Path -LiteralPath 'X:\Expected\file.dat'
+Get-PSDrive -Name $driveLetter -ErrorAction SilentlyContinue
+Test-Path -LiteralPath $expectedFile
 ```
 
 Use a verified UNC path, create the mapping in the same identity/session, or ask the user. Do not guess a network path.

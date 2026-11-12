@@ -2,6 +2,8 @@
 
 Personal preferences, instructions, and skills shared across my computers.
 
+Use relative paths, environment variables, or runtime path discovery in shared docs and skills. Keep machine-specific references in the local Codex setup.
+
 ## Contents
 
 - [config.toml](config.toml): desktop appearance and input preferences, TUI status line, and the experimental context-management setting.

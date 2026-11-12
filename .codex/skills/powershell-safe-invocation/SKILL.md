@@ -21,10 +21,10 @@ When the host or execution API already launches PowerShell, select `pwsh` there 
 Never construct one large command string when arguments can be passed separately:
 
 ```powershell
-$exe = 'C:\Path With Spaces\tool.exe'
+$exe = '.\Path With Spaces\tool.exe'
 $nativeArgs = @(
     '--input'
-    'C:\Data Folder\input.json'
+    '.\Data Folder\input.json'
     '--flag'
 )
 
@@ -65,8 +65,8 @@ Use hashtable splatting and terminating errors for PowerShell cmdlets:
 
 ```powershell
 $copyParams = @{
-    LiteralPath = 'C:\Data[1]\input.txt'
-    Destination = 'C:\Output'
+    LiteralPath = '.\Data[1]\input.txt'
+    Destination = '.\Output'
     Force       = $true
     ErrorAction = 'Stop'
 }

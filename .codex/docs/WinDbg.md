@@ -6,6 +6,7 @@
 
 ## Symbols
 
+- Use `_NT_SYMBOL_PATH` as the default symbol path. Prefer an explicit symbol path supplied by the user or workspace.
 - When debugging dumps from another machine or from binaries not built locally, ask for private symbol access first instead of assuming only public symbols are available.
 - If the local workspace instructions specify a private symbol server, use that server.
 
