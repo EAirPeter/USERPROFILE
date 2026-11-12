@@ -5,6 +5,7 @@
 - Open and follow this document whenever the task involves Unreal Engine source code, Unreal build behavior, Unreal project structure, Unreal-specific debugging helpers, or Unreal coding conventions.
 - Rules in **General Rules** are mandatory unless a more specific user or workspace instruction explicitly overrides them.
 - Items in **Preferences** are the default choice. Follow them unless an established local pattern or concrete technical requirement provides a reason not to.
+- Consult nearby maintained code and representative changes for style choices the guide leaves open. Review Rider and Clang-Tidy suggestions against the applicable guidance and local style before applying them.
 
 ## General Rules
 
@@ -14,45 +15,74 @@
 
 ### C++ Style
 
+#### Layout And Linkage
+
+- Indent C++ blocks with one tab per level, including namespace bodies. Use Allman braces for multiline blocks.
+- Keep empty blocks as `{}`. Put an empty function or type body on the same line as its signature or header. After a constructor initializer list, put `{}` on its own line at the constructor's indentation.
+- For conditional compilation, indent the C++ as usual. Place the opening directive (`#if`, `#ifdef`, or `#ifndef`) one tab to the left of the surrounding C++ indentation, stopping at column one. Align the corresponding `#elif`, `#else`, and `#endif` with it.
+- Use tabs to align names and default initializers within related groups of member declarations. Put each constructor initializer on its own line, with a leading colon on the first and leading commas on the rest.
+- Do not use anonymous namespaces. For free functions, variables, constants, and registration objects that require internal linkage in a `.cpp` file, declare them `static`.
+
+```cpp
+namespace Feature
+{
+	static bool IsSupported()
+	{
+	#if WITH_EDITOR
+		return true;
+	#else
+		return false;
+	#endif
+	}
+}
+```
+
+```cpp
+void OnStreamComplete() {}
+
+class FStreamingTag {};
+
+struct FLODRange
+{
+	FLODRange() {}
+
+	FLODRange(int32 InFirstLOD, int32 InLastLOD)
+		: FirstLOD(InFirstLOD)
+		, LastLOD(InLastLOD)
+	{}
+
+	int32	FirstLOD	= 0;
+	int32	LastLOD		= 0;
+};
+```
+
+#### Includes
+
 - In a `.cpp` file with a matching `.h` file, include that matching header first, regardless of its path prefix. Separate it from all other includes with exactly one blank line. Apply the remaining include-order rules only after this matching-header block.
 - Include order rule: headers without a subdirectory prefix come first, then headers with subdirectory prefixes; within each group, sort in ascending, case-insensitive lexicographical order. Keep these groups contiguous without an extra blank line between them.
 - Place all angle-bracket includes (`#include <...>`) after all quoted includes (`#include "..."`), including any `.generated.h` include. Separate the angle-bracket include block from the quoted includes with exactly one blank line.
 - If a header includes a generated header, keep its `.generated.h` include last among the quoted includes. Exclude the generated header from the normal include-order groups.
-- Do not use anonymous namespaces. For free functions, variables, constants, and registration objects that require internal linkage in a `.cpp` file, declare them `static`.
-- Indent all content inside a namespace by one tab relative to the namespace declaration. This includes classes, structs, static helpers, free functions, and out-of-line member-function definitions.
+
+```cpp
+#include "Components/RayTracingMeshComponent.h"
+
+#include "FoliageType.h"
+#include "Async/Fundamental/Scheduler.h"
+#include "Engine/CollisionProfile.h"
+#include "Engine/RayTracingMeshAsset.h"
+
+#include <type_traits>
+```
+
+#### Reflection Macros
+
 - In every Unreal reflection macro, including `UCLASS`, `UENUM`, `UFUNCTION`, `UINTERFACE`, `UPARAM`, `UPROPERTY`, `USTRUCT`, and similar macros, sort specifiers by specifier name in ascending, case-insensitive lexicographical order. Ignore assigned values when comparing names. Spell the metadata specifier as `Meta` with an uppercase `M`. If present, place `Category` second to last and `Meta` last. Sort entries inside `Meta = (...)` by the same lexicographical rule. `ClassGroup` and other specifiers follow the normal alphabetical order; they are not treated as `Category`.
 
-  ```cpp
-  #include "Components/RayTracingMeshComponent.h"
-
-  #include "FoliageType.h"
-  #include "Async/Fundamental/Scheduler.h"
-  #include "Engine/CollisionProfile.h"
-  #include "Engine/RayTracingMeshAsset.h"
-
-  #include <type_traits>
-  ```
-
-  ```cpp
-  namespace Feature
-  {
-  	static bool IsSupported()
-  	{
-  		return true;
-  	}
-
-  	void FProcessor::Run()
-  	{
-  		// ...
-  	}
-  }
-  ```
-
-  ```cpp
-  UCLASS(Abstract, BlueprintType, NotBlueprintable, Meta = (DisplayName = "Ray Tracing Mesh"))
-  UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ray Tracing", Meta = (AllowPrivateAccess = "true", DisplayName = "Mesh"))
-  UFUNCTION(BlueprintCallable, Category = "Ray Tracing", Meta = (DisplayName = "Set Mesh"))
-  ```
+```cpp
+UCLASS(Abstract, BlueprintType, NotBlueprintable, Meta = (DisplayName = "Ray Tracing Mesh"))
+UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ray Tracing", Meta = (AllowPrivateAccess = "true", DisplayName = "Mesh"))
+UFUNCTION(BlueprintCallable, Category = "Ray Tracing", Meta = (DisplayName = "Set Mesh"))
+```
 
 ### Custom Show Flags
 
@@ -70,10 +100,10 @@
 
 ### C++ Implementation
 
-- For user-facing multi-line debug text that is ultimately drawn line-by-line, prefer storing and building `TArray<FString>` directly instead of composing one newline-joined `FString` and splitting it again later.
-- When a mutex is needed, prefer `UE::FMutex` with `UE::TScopeLock` using CTAD style, for example `UE::TScopeLock SL(Mutex);`.
-- For `UE::TScopeLock`, prefer the local variable name `SL`.
+- Prefer explicit types for ordinary local declarations and range-for elements. Use `auto` for lambdas and for iterators whose explicit types would obscure the code.
+- When a mutex is needed, prefer `UE::FMutex` with `UE::TScopeLock`. Use class template argument deduction for the lock and name it `SL`, as in `UE::TScopeLock SL(Mutex);`.
+- Spell out `TCustomShowFlag<>` with its template argument list.
 - In private `.cpp` files in these Unreal C++ workspaces, keep includes lean and rely on the module PCH when practical instead of redundantly including headers already covered there.
-- Prefer explicit `TCustomShowFlag<>` instead of relying on CTAD for `TCustomShowFlag`.
+- For user-facing multi-line debug text that is ultimately drawn line-by-line, prefer storing and building `TArray<FString>` directly instead of composing one newline-joined `FString` and splitting it again later.
 - When using `UDebugDrawService` with a custom show flag, avoid redundantly calling `TCustomShowFlag::IsEnabled()` inside the draw delegate if the service callback is already gated by that show flag.
 - If a debug draw path is already invoked every frame when visible, prefer driving lightweight update scheduling from `Draw` instead of keeping a parallel `Tick` path unless a separate tick is actually needed.
