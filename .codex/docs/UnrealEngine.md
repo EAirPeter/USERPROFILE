@@ -60,8 +60,8 @@ struct FLODRange
 
 - In a `.cpp` file with a matching `.h` file, include that matching header first, regardless of its path prefix. Separate it from all other includes with exactly one blank line. Apply the remaining include-order rules only after this matching-header block.
 - Include order rule: headers without a subdirectory prefix come first, then headers with subdirectory prefixes; within each group, sort in ascending, case-insensitive lexicographical order. Keep these groups contiguous without an extra blank line between them.
-- Place all angle-bracket includes (`#include <...>`) after all quoted includes (`#include "..."`), including any `.generated.h` include. Separate the angle-bracket include block from the quoted includes with exactly one blank line.
-- If a header includes a generated header, keep its `.generated.h` include last among the quoted includes. Exclude the generated header from the normal include-order groups.
+- Place angle-bracket includes (`#include <...>`) after the regular quoted includes (`#include "..."`). Separate the two groups with exactly one blank line.
+- If a header has a `.generated.h` include, place it after all other includes, including angle-bracket includes. Exclude it from the normal include-order groups.
 
 ```cpp
 #include "Components/RayTracingMeshComponent.h"
