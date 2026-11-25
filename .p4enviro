@@ -1,5 +1,5 @@
 P4ALIASES=$home/.p4aliases
 P4CHARSET=utf8
 P4CONFIG=.p4config
-P4EDITOR=D:\Program Files\Vim\vim91\gvim.exe
+P4EDITOR=$home/scoop/apps/vim/current/gvim.exe
 P4IGNORE=.p4ignore;.p4ignore.txt;.gitignore
