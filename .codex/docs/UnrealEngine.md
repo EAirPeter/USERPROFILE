@@ -56,6 +56,17 @@ struct FLODRange
 };
 ```
 
+#### Naming
+
+- Prefix non-boolean `std::atomic` variables and members with `Atomic`, and `std::atomic<bool>` variables and members with `bAtomic`.
+- Name byte-count variables, parameters, and members with `Size` rather than `Bytes` (for example, `BufferSize`, `PayloadSize`, and `StreamableDataSize`, not `BufferBytes` or `PayloadBytes`).
+
+```cpp
+uint32						PayloadSize		= 0;
+std::atomic<uint32>			AtomicState{0};
+std::atomic<bool>			bAtomicComplete{false};
+```
+
 #### Includes
 
 - In a `.cpp` file with a matching `.h` file, include that matching header first, regardless of its path prefix. Separate it from all other includes with exactly one blank line. Apply the remaining include-order rules only after this matching-header block.
@@ -101,6 +112,8 @@ UFUNCTION(BlueprintCallable, Category = "Ray Tracing", Meta = (DisplayName = "Se
 ### C++ Implementation
 
 - Prefer explicit types for ordinary local declarations and range-for elements. Use `auto` for lambdas and for iterators whose explicit types would obscure the code.
+- Do not spell out the default `, ESPMode::ThreadSafe` argument on Unreal smart-pointer types or helpers (`TSharedPtr<T>`, `TSharedRef<T>`, `TWeakPtr<T>`, `TSharedFromThis<T>`, `MakeShared<T>()`).
+- Prefer references (`T&` or `const T&`) over raw pointers when a value is guaranteed non-null and is never rebound, including reference members initialized at construction and non-null parameters (except where UHT reflection requires `TObjectPtr<T>` or `UObject*`).
 - When a mutex is needed, prefer `UE::FMutex` with `UE::TScopeLock`. Use class template argument deduction for the lock and name it `SL`, as in `UE::TScopeLock SL(Mutex);`.
 - Spell out `TCustomShowFlag<>` with its template argument list.
 - In private `.cpp` files in these Unreal C++ workspaces, keep includes lean and rely on the module PCH when practical instead of redundantly including headers already covered there.
